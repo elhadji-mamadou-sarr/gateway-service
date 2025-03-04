@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste Etudiants</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Accueil</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/etudiants">Étudiants</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/classes">Classes</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-item-center">
+            <h4>Liste des étudiants</h4>
+            <a class="btn btn-primary" href="/etudiants/add">Ajouter un étudiant</a>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Code</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Âge</th>
+                <th>Téléphone</th>
+                <th class="d-md-flex justify-content-md-end">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="etudiant : ${etudiants}">
+                <td th:text="${etudiant.id}"></td>
+                <td th:text="${etudiant.code}"></td>
+                <td th:text="${etudiant.nom}"></td>
+                <td th:text="${etudiant.prenom}"></td>
+                <td th:text="${etudiant.age}"></td>
+                <td th:text="${etudiant.telephone}"></td>
+                <td>
+                    <div class="gap-2 d-md-flex justify-content-md-end">
+                        <a th:href="@{/etudiants/edit/{id}(id=${etudiant.id})}"  class="btn btn-outline-primary btn-sm">Modifier</a>
+                        <form th:action="@{/etudiants/delete/{id}(id=${etudiant.id})}" method="post" >
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Supprimer</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

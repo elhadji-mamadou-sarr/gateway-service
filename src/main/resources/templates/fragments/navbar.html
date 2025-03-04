@@ -1,0 +1,31 @@
+<link th:href="@{/css/styles.css}" rel="stylesheet">
+
+
+<!-- Définir le fragment "navbar" -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="navbar">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Accueil</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/etudiants">Étudiants</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/classes">Classes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/cours">Cours</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/professeurs">Professeurs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/matieres">Matieres</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
