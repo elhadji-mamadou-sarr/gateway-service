@@ -62,7 +62,6 @@ public class CoursController {
     // Afficher le formulaire d'édition
     @GetMapping("/edit/{id}")
     public Mono<String> formulaireModification(@PathVariable Long id, Model model) {
-
         return webClient.get()
                 .uri("/api/classes") // Récupère les classes du microservice classes
                 .retrieve()
@@ -75,8 +74,8 @@ public class CoursController {
                                 .bodyToMono(Cours.class)
                 )
                 .doOnNext(tuple -> {
-                model.addAttribute("cour", tuple.getT1());
-                model.addAttribute("classes", tuple.getT2());
+                    model.addAttribute("classes", tuple.getT1()); // Liste des classes
+                    model.addAttribute("cour", tuple.getT2()); // Cours à modifier
                 })
                 .thenReturn("cours/edit");
     }
@@ -100,6 +99,19 @@ public class CoursController {
                 .retrieve()
                 .bodyToMono(Void.class)
                 .thenReturn("redirect:/cours");
+    }
+
+
+    @GetMapping("/classe/{classeId}")
+    public Mono<String> getCoursByClasse(@PathVariable Long classeId, Model model) {
+        return webClient.get()
+                .uri("/api/cours/classe/{classeId}", classeId)
+                .retrieve()
+                .bodyToFlux(Cours.class)
+                .collectList()
+                .defaultIfEmpty(List.of())
+                .doOnNext(cours -> model.addAttribute("cours", cours))
+                .thenReturn("cours/list");
     }
 
 

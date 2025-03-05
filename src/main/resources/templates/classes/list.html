@@ -33,6 +33,7 @@
                     <td th:text="${classe.niveau}"></td>
                     <td>
                         <div class="gap-2 d-md-flex justify-content-md-end">
+                            <a th:href="@{/classes/{id}(id=${classe.id})}" class="btn btn-outline-warning btn-sm">Details</a>
                             <a th:href="@{/classes/edit/{id}(id=${classe.id})}" class="btn btn-outline-primary btn-sm">Modifier</a>
                             <form th:action="@{/classes/delete/{id}(id=${classe.id})}" method="post">
                                 <button class="btn btn-outline-danger btn-sm" type="submit">Supprimer</button>

@@ -1,6 +1,7 @@
 package com.java.isi.gatewayservice.controller;
 
 import com.java.isi.gatewayservice.dto.Classe;
+import com.java.isi.gatewayservice.dto.Cours;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +72,28 @@ public class ClasseController {
                 .bodyToMono(Classe.class)
                 .thenReturn("redirect:/classes");
     }
+
+
+    @GetMapping("/{id}")
+    public Mono<String> detailsClasse(@PathVariable Long id, Model model) {
+        return webClient.get()
+                .uri("/api/classes/{id}", id)
+                .retrieve()
+                .bodyToMono(Classe.class)
+                .zipWith(
+                        webClient.get()
+                                .uri("/api/cours/classe/{id}", id)
+                                .retrieve()
+                                .bodyToFlux(Cours.class)
+                                .collectList()
+                )
+                .doOnNext(tuple -> {
+                    model.addAttribute("classe", tuple.getT1());
+                    model.addAttribute("cours", tuple.getT2());
+                })
+                .thenReturn("classes/details"); // Supposons que tu as une vue "details"
+    }
+
 
     // Supprimer une classe
     @PostMapping("/delete/{id}")
