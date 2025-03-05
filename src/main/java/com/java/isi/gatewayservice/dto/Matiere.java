@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Matiere {
 
-    private Long id = null;
+    private Long id;
 
     private String libelle;
 

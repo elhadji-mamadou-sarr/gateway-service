@@ -1,6 +1,9 @@
 package com.java.isi.gatewayservice.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -8,10 +11,10 @@ import lombok.*;
 @NoArgsConstructor
 public class Professeur {
 
-    private Long id = null;
+    private Long id;
     private String nom;
     private String prenom;
     private String email;
     private String telephone;
-    private Matiere matiere = null; // ID de la matière associée
+    private Matiere matiere; // ID de la matière associée
 }

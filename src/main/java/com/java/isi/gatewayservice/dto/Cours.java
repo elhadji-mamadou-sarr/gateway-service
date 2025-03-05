@@ -1,6 +1,9 @@
 package com.java.isi.gatewayservice.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -8,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 public class Cours {
 
-    private Long id = null;
+    private Long id;
 
     private String libelle;
 
