@@ -18,31 +18,7 @@
             <a class="btn btn-primary" href="/cours/ajout">Ajouter un cours</a>
         </div>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Libelle</th>
-                <th>Description</th>
-                <th class="d-md-flex justify-content-md-end">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr th:each="cour : ${cours}">
-                    <td th:text="${cour.id}"></td>
-                    <td th:text="${cour.libelle}"></td>
-                    <td th:text="${cour.description}"></td>
-                    <td>
-                        <div class="gap-2 d-md-flex justify-content-md-end">
-                            <a th:href="@{/cours/edit/{id}(id=${cour.id})}" class="btn btn-outline-primary btn-sm">Modifier</a>
-                            <form th:action="@{/cours/delete/{id}(id=${cour.id})}" method="post">
-                                <button class="btn btn-outline-danger btn-sm" type="submit">Supprimer</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div th:replace="~{fragments/cours-table :: cours-table(${cours})}"></div>
 
     </div>
 
