@@ -35,3 +35,11 @@ jobs:
       - name: 🏷 Création d’une image Docker
         run: |
           docker build -t gateway-service:latest .
+
+      - name: 🔑 Login à Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: 🚀 Push de l'image Docker (Docker Hub)
+        run: |
+          docker tag gateway-service:latest elhadji01/gateway-service:latest
+          docker push elhadji01/gateway-service:latest
