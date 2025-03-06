@@ -1,0 +1,17 @@
+#version: '3.8'
+
+services:
+  gateway-service:
+    image: elhadji01/gateway-service:latest
+    container_name: gateway-service
+    restart: always
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
