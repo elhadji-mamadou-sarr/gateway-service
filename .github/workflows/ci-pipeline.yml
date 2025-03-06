@@ -9,17 +9,17 @@ on:
       - staging
   pull_request:
 
-  env:
-    IMAGE_NAME: elhadji01/gateway-service
-    REGISTRY_DEV: elhadji01/dev-registry
-    REGISTRY_PROD: elhadji01/prod-registry
-    SONAR_PROJECT_KEY: elhadji-mamadou-sarr_gateway-service
-    SONAR_ORG: elhadji-mamadou-sarr
-    SONAR_HOST: https://sonarcloud.io
-
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: elhadji01/gateway-service
+      REGISTRY_DEV: elhadji01/dev-registry
+      REGISTRY_PROD: elhadji01/prod-registry
+      SONAR_PROJECT_KEY: elhadji-mamadou-sarr_gateway-service
+      SONAR_ORG: elhadji-mamadou-sarr
+      SONAR_HOST: https://sonarcloud.io
 
     steps:
       - name: Cloner le repo
@@ -34,8 +34,8 @@ jobs:
       - name: Build du projet
         run: mvn clean install -DskipTests
 
-#      - name: 🧪 Exécuter les tests
-#        run: mvn test
+      #      - name: 🧪 Exécuter les tests
+      #        run: mvn test
 
       - name: 🎯 Vérification SonarQube
         run: mvn sonar:sonar -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.organization=$SONAR_ORG -Dsonar.host.url=$SONAR_HOST
@@ -48,34 +48,34 @@ jobs:
           name: gateway-artifact
           path: target/*.jar
 
-#      - name: 🏷 Création d’une image Docker
-#        run: |
-#          docker build -t gateway-service:latest .
-#
-#      - name: 🔑 Login à Docker Hub
-#        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-#
-#      - name: 🚀 Push de l'image Docker (Docker Hub)
-#        run: |
-#          docker tag gateway-service:latest elhadji01/gateway-service:latest
-#          docker push elhadji01/gateway-service:latest
+  #      - name: 🏷 Création d’une image Docker
+  #        run: |
+  #          docker build -t gateway-service:latest .
+  #
+  #      - name: 🔑 Login à Docker Hub
+  #        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+  #
+  #      - name: 🚀 Push de l'image Docker (Docker Hub)
+  #        run: |
+  #          docker tag gateway-service:latest elhadji01/gateway-service:latest
+  #          docker push elhadji01/gateway-service:latest
 
-docker:
-  needs: build
-  runs-on: ubuntu-latest
-  steps:
-    - name: 🛎 Cloner le repo
-      uses: actions/checkout@v3
+  docker:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛎 Cloner le repo
+        uses: actions/checkout@v3
 
-    - name: 🔑 Login à Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: 🔑 Login à Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-    - name: 🏷 Création et Push de l'image Docker
-      run: |
-        TAG=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
-        IMAGE_TAG=${{ env.IMAGE_NAME }}:$TAG
-        docker build -t $IMAGE_TAG .
-        docker push $IMAGE_TAG
+      - name: 🏷 Création et Push de l'image Docker
+        run: |
+          TAG=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
+          IMAGE_TAG=${{ env.IMAGE_NAME }}:$TAG
+          docker build -t $IMAGE_TAG .
+          docker push $IMAGE_TAG
 
   deploy:
     needs: docker
