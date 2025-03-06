@@ -89,6 +89,17 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
 
+      - name:  🔑 Configurer AWS CLI
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region eu-north-1
+
+      - name: 🔑 Mettre à jour le contexte Kubernetes pour EKS
+        run: |
+          aws eks update-kubeconfig --name gateway-service-cluster --region eu-north-1
+          kubectl config current-context
+
       - name: 🔑 Configurer l'accès à Kubernetes
         run: |
           echo "${{ secrets.KUBECONFIG }}" | base64 --decode > kubeconfig.yaml
