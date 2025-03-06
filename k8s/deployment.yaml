@@ -20,7 +20,7 @@ spec:
           image: elhadji01/gateway-service:latest
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               protocol: TCP
       restartPolicy: Always
       

@@ -72,7 +72,7 @@ jobs:
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
 
-  deploy:
+  deploy-k8s:
     needs: docker
     runs-on: ubuntu-latest
     env:
@@ -82,16 +82,19 @@ jobs:
       - name: 🛎 Cloner le repo
         uses: actions/checkout@v3
 
-      - name: 🚀 Déploiement selon l'environnement
+      - name: 📥 Installer `kubectl`
         run: |
-          TAG=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
-          if [[ "$TAG" == "master" ]]; then
-            echo "Déploiement en DEV sur Docker..."
-            docker run -d -p 8080:8080 ${{ env.IMAGE_NAME }}:master
-          elif [[ "$TAG" == "staging" ]]; then
-            echo "Déploiement en STAGING sur Docker..."
-            docker run -d -p 8080:8080 ${{ env.IMAGE_NAME }}:staging
-          elif [[ "$TAG" == "preprod" || "$TAG" == "prod" ]]; then
-            echo "Déploiement en K8s (non configuré pour l’instant)"
-            # Ici, on ajoutera plus tard le script pour déployer sur Kubernetes
-          fi
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+
+      - name: 🔑 Configurer l'accès à Kubernetes
+        run: |
+          echo "${{ secrets.KUBECONFIG }}" | base64 --decode > kubeconfig.yaml
+          export KUBECONFIG=kubeconfig.yaml
+
+      - name: 🚀 Déployer sur Kubernetes (Preprod)
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
