@@ -34,9 +34,6 @@ jobs:
       - name: Build du projet
         run: mvn clean install -DskipTests
 
-      #      - name: 🧪 Exécuter les tests
-      #        run: mvn test
-
       - name: 🎯 Vérification SonarQube
         run: mvn sonar:sonar -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.organization=$SONAR_ORG -Dsonar.host.url=$SONAR_HOST
         env:
@@ -48,21 +45,12 @@ jobs:
           name: gateway-artifact
           path: target/*.jar
 
-  #      - name: 🏷 Création d’une image Docker
-  #        run: |
-  #          docker build -t gateway-service:latest .
-  #
-  #      - name: 🔑 Login à Docker Hub
-  #        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-  #
-  #      - name: 🚀 Push de l'image Docker (Docker Hub)
-  #        run: |
-  #          docker tag gateway-service:latest elhadji01/gateway-service:latest
-  #          docker push elhadji01/gateway-service:latest
-
   docker:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: elhadji01/gateway-service
+
     steps:
       - name: 🛎 Cloner le repo
         uses: actions/checkout@v3
@@ -74,12 +62,16 @@ jobs:
         run: |
           TAG=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
           IMAGE_TAG=${{ env.IMAGE_NAME }}:$TAG
+          echo "Création de l'image Docker avec le tag : $IMAGE_TAG"
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
 
   deploy:
     needs: docker
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: elhadji01/gateway-service
+
     steps:
       - name: 🛎 Cloner le repo
         uses: actions/checkout@v3
