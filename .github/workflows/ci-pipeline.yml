@@ -82,6 +82,7 @@ jobs:
       - name: 🛎 Cloner le repo
         uses: actions/checkout@v3
 
+
       - name: 📥 Installer `kubectl`
         run: |
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -92,6 +93,10 @@ jobs:
         run: |
           echo "${{ secrets.KUBECONFIG }}" | base64 --decode > kubeconfig.yaml
           export KUBECONFIG=kubeconfig.yaml
+          kubectl config use-context arn:aws:eks:eu-north-1:851725523231:cluster/gateway-service-cluster
+
+      - name: 🔍 Vérifier la connexion au cluster EKS
+        run: kubectl get nodes
 
       - name: 🚀 Déployer sur Kubernetes (Preprod)
         run: |
