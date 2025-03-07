@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gateway-service
+  namespace: preprod  # 🔥 Ajout du namespace
   labels:
     app: gateway-service
 spec:
@@ -11,7 +12,6 @@ spec:
       app: gateway-service
   template:
     metadata:
-      name: gateway-service
       labels:
         app: gateway-service
     spec:
@@ -23,4 +23,3 @@ spec:
             - containerPort: 8080
               protocol: TCP
       restartPolicy: Always
-      
