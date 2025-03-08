@@ -11,5 +11,5 @@ spec:
       port: 8080
       targetPort: 8080
       nodePort: 30080  # <-- Ajout pour exposer sur un port fixe
-  type: NodePort  # <-- Changer de LoadBalancer à NodePort
+  type: LoadBalancer  # <-- Changer de LoadBalancer à NodePort
 

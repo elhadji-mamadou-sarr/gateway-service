@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: gateway-service
   namespace: prod  # 🔥 Ajout du namespace
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
   labels:
     app: gateway-service
 spec:

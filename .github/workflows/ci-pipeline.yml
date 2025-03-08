@@ -120,9 +120,9 @@ jobs:
       - name: 🚀 Déployer sur Kubernetes (Preprod)
         run: |
           if [[ "$TAG" == "master" ]]; then
-            kubectl apply -f k8s/dev/namespace.yaml
-            kubectl apply -f k8s/dev/deployment.yaml
-            kubectl apply -f k8s/dev/service.yaml
+            kubectl apply -f k8s/namespace.yaml
+            kubectl apply -f k8s/deployment.yaml
+            kubectl apply -f k8s/service.yaml
           elif [[ "$TAG" == "staging" ]]; then
             kubectl apply -f k8s/staging/namespace.yaml
             kubectl apply -f k8s/staging/deployment.yaml
@@ -132,7 +132,7 @@ jobs:
             kubectl apply -f k8s/preprod/deployment.yaml
             kubectl apply -f k8s/preprod/service.yaml
           elif [[ "$TAG" == "prod" ]]; then
-            kubectl apply -f k8s/prod/namespace.yaml
-            kubectl apply -f k8s/prod/deployment.yaml
-            kubectl apply -f k8s/prod/service.yaml
+            kubectl apply -f k8s/namespace.yaml
+            kubectl apply -f k8s/deployment.yaml
+            kubectl apply -f k8s/service.yaml
           fi
