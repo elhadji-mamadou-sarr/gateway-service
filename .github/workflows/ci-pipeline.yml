@@ -7,20 +7,14 @@ on:
       - develop
       - preprod
       - prod
-      - preprod
   pull_request:
 
 jobs:
   build:
+    name: Build du projet
     runs-on: ubuntu-latest
-
     env:
       IMAGE_NAME: elhadji01/gateway-service
-      REGISTRY_DEV: elhadji01/dev-registry
-      REGISTRY_PROD: elhadji01/prod-registry
-      SONAR_PROJECT_KEY: elhadji-mamadou-sarr_gateway-service
-      SONAR_ORG: elhadji-mamadou-sarr
-      SONAR_HOST: https://sonarcloud.io
 
     steps:
       - name: Cloner le repo
@@ -32,29 +26,48 @@ jobs:
           distribution: 'temurin'
           java-version: '23'
 
-      - name: Build du projet
+      - name: Compiler le projet
         run: mvn clean install -DskipTests
 
-      #      - name: Exécuter les tests IHM
-      #        run: |
-      #          mvn verify -P ui-tests
+  sonar:
+    name: Tests et analyse SonarQube
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      SONAR_PROJECT_KEY: elhadji-mamadou-sarr_gateway-service
+      SONAR_ORG: elhadji-mamadou-sarr
+      SONAR_HOST: https://sonarcloud.io
 
-      #      - name: Exécuter les tests unitaires
-      #        run: mvn test
+    steps:
+      - name: Cloner le repo
+        uses: actions/checkout@v3
 
-      - name: Vérification SonarQube
+      - name: Exécuter les tests unitaires
+        run: mvn test
+
+      - name: Analyse avec SonarQube
         run: mvn sonar:sonar -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.organization=$SONAR_ORG -Dsonar.host.url=$SONAR_HOST
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Stocker les artefacts de build
+  package:
+    name: Packaging des artefacts
+    needs: sonar
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cloner le repo
+        uses: actions/checkout@v3
+
+      - name: Télécharger les artefacts de build
         uses: actions/upload-artifact@v4
         with:
           name: gateway-artifact
           path: target/*.jar
 
-  docker:
-    needs: build
+  docker_build:
+    name: Création et push de l'image Docker
+    needs: package
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: elhadji01/gateway-service
@@ -69,19 +82,19 @@ jobs:
           name: gateway-artifact
           path: target
 
-      - name: Login à Docker Hub
+      - name: Se connecter à Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Création et Push de l'image Docker
+      - name: Construire et pousser l'image Docker
         run: |
           TAG=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
           IMAGE_TAG=${{ env.IMAGE_NAME }}:$TAG
-          echo "Création de l'image Docker avec le tag : $IMAGE_TAG"
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
 
-  deploy-k8s:
-    needs: docker
+  deploy_k8s:
+    name: Déploiement Kubernetes
+    needs: docker_build
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: elhadji01/gateway-service
@@ -90,7 +103,7 @@ jobs:
       - name: Cloner le repo
         uses: actions/checkout@v3
 
-      - name: Installer `kubectl`
+      - name: Installer kubectl
         run: |
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x kubectl
@@ -107,16 +120,7 @@ jobs:
           aws eks update-kubeconfig --name gateway-service-cluster --region eu-north-1
           kubectl config current-context
 
-      - name: Configurer l'accès à Kubernetes
-        run: |
-          echo "${{ secrets.KUBECONFIG }}" | base64 --decode > kubeconfig.yaml
-          export KUBECONFIG=kubeconfig.yaml
-          kubectl config use-context arn:aws:eks:eu-north-1:851725523231:cluster/gateway-service-cluster
-
-      - name: Vérifier la connexion au cluster EKS
-        run: kubectl get nodes
-
-      - name: Déployer sur Kubernetes (Preprod)
+      - name: Déployer sur Kubernetes
         run: |
           kubectl apply -f k8s/namespace.yaml
           kubectl apply -f k8s/deployment.yaml
@@ -129,6 +133,7 @@ jobs:
           
           kubectl apply -f k8s/grafana-deployment.yaml
           kubectl apply -f k8s/grafana-service.yaml
+
 
 #          if [[ "$TAG" == "master" ]]; then
 #            kubectl apply -f k8s/namespace.yaml
