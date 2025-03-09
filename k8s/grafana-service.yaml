@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service
+  namespace: monitoring
+spec:
+  type: NodePort    # Ou NodePort
+  ports:
+    - port: 3003
+      targetPort: 3003
+      protocol: TCP
+  selector:
+    app: grafana

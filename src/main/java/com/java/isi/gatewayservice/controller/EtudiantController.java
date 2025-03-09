@@ -1,15 +1,20 @@
 package com.java.isi.gatewayservice.controller;
 
-import com.java.isi.gatewayservice.dto.Classe;
-import com.java.isi.gatewayservice.dto.Cours;
-import com.java.isi.gatewayservice.dto.Etudiant;
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
-import java.util.List;
+import com.java.isi.gatewayservice.dto.Classe;
+import com.java.isi.gatewayservice.dto.Etudiant;
+
+import reactor.core.publisher.Mono;
 
 @Controller
 @RequestMapping("/etudiants")
