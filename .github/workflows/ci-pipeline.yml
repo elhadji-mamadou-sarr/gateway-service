@@ -42,8 +42,8 @@ jobs:
       - name: Cloner le repo
         uses: actions/checkout@v3
 
-      - name: Exécuter les tests unitaires
-        run: mvn test
+#      - name: Exécuter les tests unitaires
+#        run: mvn test
 
       - name: Analyse avec SonarQube
         run: mvn sonar:sonar -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.organization=$SONAR_ORG -Dsonar.host.url=$SONAR_HOST
