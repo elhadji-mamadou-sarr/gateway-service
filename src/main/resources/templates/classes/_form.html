@@ -1,0 +1,18 @@
+<div th:fragment="formClasse(title, action, classe)">
+    <h2 th:text="${title}"></h2>
+
+    <form th:action="${action}" method="post" class="mt-3">
+        <div class="mb-3">
+            <label for="nom" class="form-label">Nom</label>
+            <input type="text" class="form-control" id="nom" name="nom" th:value="${classe != null ? classe.nom : ''}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="niveau" class="form-label">Niveau</label>
+            <input type="text" class="form-control" id="niveau" name="niveau" th:value="${classe != null ? classe.niveau : ''}" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+        <a href="/classes" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>

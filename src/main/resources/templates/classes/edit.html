@@ -14,20 +14,10 @@
   <div class="container mt-4">
 
       <h2>Modifier une classe</h2>
-
-      <form th:attion="@{/classes/edit/{id}(id=${classe.id})}" method="post" class="mt-3">
-          <div class="mb-3">
-              <label for="nom" class="form-label">Nom</label>
-              <input type="text" class="form-control" id="nom" name="nom" th:value="${classe.nom}" required>
-          </div>
-
-          <div class="mb-3">
-              <label for="niveau" class="form-label">Niveau</label>
-              <input type="text" class="form-control" id="niveau" name="niveau" th:value="${classe.niveau}" required>
-          </div>
-          <button type="submit" class="btn btn-primary">Ajouter</button>
-          <a href="/classes" class="btn btn-secondary">Annuler</a>
-      </form>
+      
+      <div class="container mt-4">
+        <div th:replace="~{classe/_form :: formClasse('Modifier une classe', @{/classes/edit/{id}(id=${classe.id})}, ${classe})}"></div>
+      </div>
 
   </div>
 
