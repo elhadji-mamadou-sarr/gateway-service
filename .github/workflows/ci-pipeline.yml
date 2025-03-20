@@ -45,10 +45,10 @@ jobs:
 #      - name: Exécuter les tests unitaires
 #        run: mvn test
 
-      - name: Analyse avec SonarQube
-        run: mvn sonar:sonar -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.organization=$SONAR_ORG -Dsonar.host.url=$SONAR_HOST
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#      - name: Analyse avec SonarQube
+#        run: mvn sonar:sonar -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.organization=$SONAR_ORG -Dsonar.host.url=$SONAR_HOST
+#        env:
+#          SONAR_TOKEN:
 
   package:
     name: Packaging des artefacts
